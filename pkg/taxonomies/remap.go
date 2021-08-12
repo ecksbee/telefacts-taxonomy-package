@@ -1,8 +1,6 @@
 package taxonomies
 
 import (
-	zipPkg "archive/zip"
-	bytesPkg "bytes"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -11,20 +9,17 @@ import (
 	"ecksbee.com/telefacts/pkg/serializables"
 )
 
-//todo read bytes as zip and remap to volume/concepts
 func Remap(bytes []byte, remap map[string]string) error {
 	if VolumePath == "" {
 		return fmt.Errorf("empty VolumePath")
 	}
 	serializables.VolumePath = VolumePath
-	bytesReader := bytesPkg.NewReader(bytes)
-	zipReader, err := zipPkg.NewReader(bytesReader, bytesReader.Size())
+	unZipFiles, err := actions.Unzip(bytes)
 	if err != nil {
 		return err
 	}
-	unZipFiles := zipReader.File
 	for _, unZipFile := range unZipFiles {
-		unzipped, err := actions.Unzip(unZipFile)
+		unzipped, err := actions.UnzipFile(unZipFile)
 		if err != nil {
 			return err
 		}

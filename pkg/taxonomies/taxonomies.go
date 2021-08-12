@@ -13,18 +13,18 @@ var (
 	VolumePath string
 )
 
-type TaxonomyMeta struct {
+type Meta struct {
 	Name    string
 	Zip     string
 	Entries []string
+	Remap   map[string]string
 }
 
-func NewTaxonomy(id string, tm TaxonomyMeta, bytes []byte) error {
+func NewTaxonomy(id string, tm Meta, bytes []byte) error {
 	if VolumePath == "" {
 		return fmt.Errorf("empty VolumePath")
 	}
-	remap := make(map[string]string)
-	err := Remap(bytes, remap)
+	err := Remap(bytes, tm.Remap)
 	if err != nil {
 		return err
 	}

@@ -1,16 +1,44 @@
 package install
 
-import "ecksbee.com/telefacts-taxonomy-package/pkg/taxonomies"
+import (
+	"io/ioutil"
 
-func Run(taxonomyPackage string) error {
+	"ecksbee.com/telefacts-taxonomy-package/internal/actions"
+	"ecksbee.com/telefacts-taxonomy-package/pkg/taxonomies"
+)
+
+func Run(taxonomyPackage string, volumePath string) error {
 	id := ""
-	name := ""
-	bytes := []byte{}
-	entries := []string{}
+	bytes, err := ioutil.ReadFile(taxonomyPackage)
+	if err != nil {
+		return err
+	}
+	unZipFiles, err := actions.Unzip(bytes)
+	if err != nil {
+		return err
+	}
+	name, err := name(unZipFiles)
+	if err != nil {
+		return err
+	}
+	entries, err := entries(unZipFiles)
+	if err != nil {
+		return err
+	}
+	remap, err := remap(unZipFiles)
+	if err != nil {
+		return err
+	}
+	cleanedBytes, err := clean(unZipFiles)
+	if err != nil {
+		return err
+	}
 
-	return taxonomies.NewTaxonomy(id, taxonomies.TaxonomyMeta{
+	taxonomies.VolumePath = volumePath
+	return taxonomies.NewTaxonomy(id, taxonomies.Meta{
 		Name:    name,
 		Zip:     taxonomyPackage,
 		Entries: entries,
-	}, bytes)
+		Remap:   remap,
+	}, cleanedBytes)
 }
