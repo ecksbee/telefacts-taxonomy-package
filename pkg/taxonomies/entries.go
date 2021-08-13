@@ -49,7 +49,7 @@ func Discover(entries []string) error {
 			continue
 		}
 		var wg sync.WaitGroup
-		wg.Add(2)
+		wg.Add(3)
 		go func() {
 			defer wg.Done()
 			importSchema(schemaFile)
@@ -58,9 +58,63 @@ func Discover(entries []string) error {
 			defer wg.Done()
 			includeSchema(schemaFile)
 		}()
+		go func() {
+			defer wg.Done()
+			linkbaseRefSchema(schemaFile)
+		}()
 		wg.Wait()
 	}
 	return nil
+}
+
+func linkbaseRefSchema(file *serializables.SchemaFile) {
+	if file == nil {
+		return
+	}
+	var wg sync.WaitGroup
+	for _, annotation := range file.Annotation {
+		if annotation.XMLName.Space != attr.XSD {
+			continue
+		}
+		for _, appinfo := range annotation.Appinfo {
+			if appinfo.XMLName.Space != attr.XSD {
+				continue
+			}
+			for _, iitem := range appinfo.LinkbaseRef {
+				wg.Add(1)
+				go func(item struct {
+					XMLName  xml.Name
+					XMLAttrs []xml.Attr "xml:\",any,attr\""
+				}) {
+					defer wg.Done()
+					if item.XMLName.Space != attr.LINK {
+						return
+					}
+					arcroleAttr := attr.FindAttr(item.XMLAttrs, "arcrole")
+					if arcroleAttr == nil || arcroleAttr.Name.Space != attr.XLINK || arcroleAttr.Value != attr.LINKARCROLE {
+						return
+					}
+					typeAttr := attr.FindAttr(item.XMLAttrs, "type")
+					if typeAttr == nil || typeAttr.Name.Space != attr.XLINK || typeAttr.Value != "simple" {
+						return
+					}
+					roleAttr := attr.FindAttr(item.XMLAttrs, "role")
+					if roleAttr == nil || roleAttr.Name.Space != attr.XLINK || roleAttr.Value == "" {
+						return
+					}
+					hrefAttr := attr.FindAttr(item.XMLAttrs, "href")
+					if hrefAttr == nil || hrefAttr.Name.Space != attr.XLINK || hrefAttr.Value == "" {
+						return
+					}
+					if attr.IsValidUrl(hrefAttr.Value) {
+						go discoverRemoteURL(hrefAttr.Value)
+						return
+					}
+				}(iitem)
+			}
+		}
+	}
+	wg.Wait()
 }
 
 func includeSchema(file *serializables.SchemaFile) {

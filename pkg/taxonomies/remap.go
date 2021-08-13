@@ -20,7 +20,8 @@ func Remap(bytes []byte, remap map[string]string) error {
 		return err
 	}
 	for _, unZipFile := range unZipFiles {
-		if path.Ext(unZipFile.Name) != ".xsd" {
+		ext := path.Ext(unZipFile.Name)
+		if ext != ".xsd" && ext != ".xml" {
 			continue
 		}
 		dir := path.Dir(unZipFile.Name)
