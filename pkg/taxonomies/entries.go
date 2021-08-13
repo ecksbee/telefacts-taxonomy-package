@@ -4,6 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/url"
+	"os"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -115,7 +117,7 @@ func importSchema(file *serializables.SchemaFile) {
 				return
 			}
 			if attr.IsValidUrl(schemaLocationAttr.Value) {
-				go discoverRemoteURL(schemaLocationAttr.Value)
+				discoverRemoteURL(schemaLocationAttr.Value)
 				return
 			}
 		}(iitem)
@@ -136,17 +138,28 @@ func throttle(urlString string) {
 }
 
 func discoverRemoteURL(url string) {
-	body, err := actions.Scrape(url, throttle)
-	if err != nil {
-		return
-	}
 	dest, err := serializables.UrlToFilename(url)
 	if err != nil {
 		return
 	}
-	wLock.Lock()
-	defer wLock.Unlock()
-	actions.WriteFile(dest, body)
+	_, err = os.Stat(dest)
+	if os.IsNotExist(err) {
+		targetDir := filepath.Dir(dest)
+		err = os.MkdirAll(targetDir, 0755)
+		if err != nil {
+			return
+		}
+		body, err := actions.Scrape(url, throttle)
+		if err != nil {
+			return
+		}
+		wLock.Lock()
+		err = actions.WriteFile(dest, body)
+		if err != nil {
+			return
+		}
+		wLock.Unlock()
+	}
 	discoveredSchema, err := serializables.ReadSchemaFile(dest)
 	if err != nil {
 		return
