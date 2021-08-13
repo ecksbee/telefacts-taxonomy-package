@@ -1,6 +1,7 @@
 package test_test
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -15,8 +16,11 @@ func Test_Run(t *testing.T) {
 	}
 	tp := filepath.Join(wd, "us-gaap-2020-01-31.zip")
 	volume := filepath.Join(wd, "data")
-	err = install.Run(tp, volume)
+	id, err := install.Run(tp, volume)
 	if err != nil {
 		t.Fatal(err)
+	}
+	if id == "" {
+		t.Fatal(fmt.Errorf("empty id generated"))
 	}
 }

@@ -25,7 +25,7 @@ func main() {
 		fmt.Println("-volume is empty")
 		return
 	}
-	err := install.Run(zipVar, volumeVar)
+	_, err := install.Run(zipVar, volumeVar)
 	if err != nil {
 		panic(err)
 	}

@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/url"
-	"path/filepath"
 	"sync"
 	"time"
 
@@ -40,8 +39,7 @@ func Discover(entries []string) error {
 		if err != nil {
 			return err
 		}
-		filepath := filepath.Join(VolumePath, "concepts", url)
-		schemaFile, err := serializables.ReadSchemaFile(filepath)
+		schemaFile, err := serializables.ReadSchemaFile(url)
 		if err != nil {
 			return err
 		}

@@ -7,35 +7,34 @@ import (
 	"ecksbee.com/telefacts-taxonomy-package/pkg/taxonomies"
 )
 
-func Run(taxonomyPackage string, volumePath string) error {
-	id := ""
+func Run(taxonomyPackage string, volumePath string) (string, error) {
 	bytes, err := ioutil.ReadFile(taxonomyPackage)
 	if err != nil {
-		return err
+		return "", err
 	}
 	unZipFiles, err := actions.Unzip(bytes)
 	if err != nil {
-		return err
+		return "", err
 	}
 	name, err := name(unZipFiles)
 	if err != nil {
-		return err
+		return "", err
 	}
 	entries, err := entries(unZipFiles)
 	if err != nil {
-		return err
+		return "", err
 	}
 	remap, err := remap(unZipFiles)
 	if err != nil {
-		return err
+		return "", err
 	}
 	cleanedBytes, err := clean(unZipFiles)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	taxonomies.VolumePath = volumePath
-	return taxonomies.NewTaxonomy(id, taxonomies.Meta{
+	return taxonomies.NewTaxonomy(taxonomies.Meta{
 		Name:    name,
 		Zip:     taxonomyPackage,
 		Entries: entries,
