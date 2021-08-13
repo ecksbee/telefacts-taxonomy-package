@@ -2,7 +2,8 @@ package taxonomies
 
 import (
 	"fmt"
-	"path/filepath"
+	"os"
+	"path"
 	"strings"
 
 	"ecksbee.com/telefacts-taxonomy-package/internal/actions"
@@ -19,22 +20,39 @@ func Remap(bytes []byte, remap map[string]string) error {
 		return err
 	}
 	for _, unZipFile := range unZipFiles {
-		unzipped, err := actions.UnzipFile(unZipFile)
-		if err != nil {
-			return err
+		if path.Ext(unZipFile.Name) != ".xsd" {
+			continue
 		}
-		dir := filepath.Dir(unZipFile.Name)
-		var url string
-		if remap, found := remap[dir]; found {
-			url = strings.Replace(unZipFile.Name, dir, remap, 1)
-		}
-		dest, err := serializables.UrlToFilename(url)
-		if err != nil {
-			return err
-		}
-		err = actions.WriteFile(dest, unzipped)
-		if err != nil {
-			return err
+		dir := path.Dir(unZipFile.Name)
+		for oldPrefix, newPrefix := range remap {
+			if strings.HasPrefix(dir, oldPrefix) {
+				url := strings.Replace(unZipFile.Name, oldPrefix,
+					newPrefix, 1)
+				dest, err := serializables.UrlToFilename(url)
+				if err != nil {
+					return err
+				}
+				_, err = os.Stat(dest)
+				if !os.IsNotExist(err) {
+					continue
+				}
+				targetDir := path.Dir(dest)
+				_, err = os.Stat(targetDir)
+				if os.IsNotExist(err) {
+					err = os.MkdirAll(targetDir, 0755)
+					if err != nil {
+						return err
+					}
+				}
+				unzipped, err := actions.UnzipFile(unZipFile)
+				if err != nil {
+					return err
+				}
+				err = actions.WriteFile(dest, unzipped)
+				if err != nil {
+					return err
+				}
+			}
 		}
 	}
 	return nil
