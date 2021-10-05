@@ -2,11 +2,11 @@ module ecksbee.com/telefacts-taxonomy-package
 
 go 1.16
 
-replace ecksbee.com/telefacts => ../telefacts
+replace ecksbee.com/telefacts => github.com/ecksbee/telefacts v1.0.0
 
 require (
-	ecksbee.com/telefacts v0.6.0
+	ecksbee.com/telefacts v0.0.0-00010101000000-000000000000
 	github.com/google/uuid v1.3.0
 	github.com/joshuanario/r8lmt v0.0.0-20190907165225-782e183364f7
-	golang.org/x/net v0.0.0-20210326220855-61e056675ecf
+	golang.org/x/net v0.0.0-20211005001312-d4b1ae081e3b
 )
