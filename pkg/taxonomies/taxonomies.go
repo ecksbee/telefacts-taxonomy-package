@@ -48,7 +48,7 @@ func NewTaxonomy(tm Meta, bytes []byte) (string, error) {
 		return "", err
 	}
 	meta := filepath.Join(pathStr, "_")
-	file, _ := os.OpenFile(meta, os.O_CREATE, 0755)
+	file, _ := os.OpenFile(meta, os.O_CREATE|os.O_WRONLY, 0755)
 	defer file.Close()
 	encoder := json.NewEncoder(file)
 	return id.String(), encoder.Encode(tm)
