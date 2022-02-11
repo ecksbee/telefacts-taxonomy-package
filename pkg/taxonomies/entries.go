@@ -52,11 +52,11 @@ func Discover(entries []string) error {
 		wg.Add(3)
 		go func() {
 			defer wg.Done()
-			importSchema(schemaFile)
+			ImportSchema(schemaFile)
 		}()
 		go func() {
 			defer wg.Done()
-			includeSchema(schemaFile)
+			IncludeSchema(schemaFile)
 		}()
 		go func() {
 			defer wg.Done()
@@ -107,7 +107,7 @@ func linkbaseRefSchema(file *serializables.SchemaFile) {
 						return
 					}
 					if attr.IsValidUrl(hrefAttr.Value) {
-						go discoverRemoteURL(hrefAttr.Value)
+						go DiscoverRemoteURL(hrefAttr.Value)
 						return
 					}
 				}(iitem)
@@ -117,7 +117,7 @@ func linkbaseRefSchema(file *serializables.SchemaFile) {
 	wg.Wait()
 }
 
-func includeSchema(file *serializables.SchemaFile) {
+func IncludeSchema(file *serializables.SchemaFile) {
 	if file == nil {
 		return
 	}
@@ -138,7 +138,7 @@ func includeSchema(file *serializables.SchemaFile) {
 				return
 			}
 			if attr.IsValidUrl(schemaLocationAttr.Value) {
-				go discoverRemoteURL(schemaLocationAttr.Value)
+				go DiscoverRemoteURL(schemaLocationAttr.Value)
 				return
 			}
 		}(iitem)
@@ -146,7 +146,7 @@ func includeSchema(file *serializables.SchemaFile) {
 	wg.Wait()
 }
 
-func importSchema(file *serializables.SchemaFile) {
+func ImportSchema(file *serializables.SchemaFile) {
 	if file == nil {
 		return
 	}
@@ -171,7 +171,7 @@ func importSchema(file *serializables.SchemaFile) {
 				return
 			}
 			if attr.IsValidUrl(schemaLocationAttr.Value) {
-				discoverRemoteURL(schemaLocationAttr.Value)
+				DiscoverRemoteURL(schemaLocationAttr.Value)
 				return
 			}
 		}(iitem)
@@ -191,7 +191,7 @@ func throttle(urlString string) {
 	<-out
 }
 
-func discoverRemoteURL(url string) {
+func DiscoverRemoteURL(url string) {
 	dest, err := serializables.UrlToFilename(url)
 	if err != nil {
 		return
@@ -222,11 +222,11 @@ func discoverRemoteURL(url string) {
 	wwg.Add(2)
 	go func() {
 		defer wwg.Done()
-		importSchema(discoveredSchema)
+		ImportSchema(discoveredSchema)
 	}()
 	go func() {
 		defer wwg.Done()
-		includeSchema(discoveredSchema)
+		IncludeSchema(discoveredSchema)
 	}()
 	wwg.Wait()
 }
