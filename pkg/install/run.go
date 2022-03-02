@@ -5,9 +5,10 @@ import (
 
 	"ecksbee.com/telefacts-taxonomy-package/internal/actions"
 	"ecksbee.com/telefacts-taxonomy-package/pkg/taxonomies"
+	"ecksbee.com/telefacts/pkg/serializables"
 )
 
-func Run(taxonomyPackage string, volumePath string) (string, error) {
+func Run(taxonomyPackage string, volumePath string, throttle func(string)) (string, error) {
 	bytes, err := ioutil.ReadFile(taxonomyPackage)
 	if err != nil {
 		return "", err
@@ -32,8 +33,16 @@ func Run(taxonomyPackage string, volumePath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	taxonomies.VolumePath = volumePath
+	serializables.VolumePath = volumePath
+	err = DownloadUTR(throttle)
+	if err != nil {
+		return "", err
+	}
+	err = DownloadLRR(throttle)
+	if err != nil {
+		return "", err
+	}
 	return taxonomies.NewTaxonomy(taxonomies.Meta{
 		Name:    name,
 		Zip:     taxonomyPackage,
