@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"ecksbee.com/telefacts-taxonomy-package/pkg/install"
+	"ecksbee.com/telefacts-taxonomy-package/pkg/throttle"
 )
 
 var (
@@ -25,7 +26,8 @@ func main() {
 		fmt.Println("-volume is empty")
 		return
 	}
-	_, err := install.Run(zipVar, volumeVar)
+	throttle.StartSECThrottle()
+	_, err := install.Run(zipVar, volumeVar, throttle.Throttle)
 	if err != nil {
 		panic(err)
 	}

@@ -9,16 +9,18 @@ import (
 
 	"ecksbee.com/telefacts-taxonomy-package/pkg/install"
 	"ecksbee.com/telefacts-taxonomy-package/pkg/taxonomies"
+	"ecksbee.com/telefacts-taxonomy-package/pkg/throttle"
 )
 
 func Test_Run_USGAAP2020(t *testing.T) {
+	throttle.StartSECThrottle()
 	wd, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
 	}
 	tp := filepath.Join(wd, "us-gaap-2020-01-31.zip")
 	volume := filepath.Join(wd, "data")
-	id, err := install.Run(tp, volume)
+	id, err := install.Run(tp, volume, throttle.Throttle)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,13 +30,14 @@ func Test_Run_USGAAP2020(t *testing.T) {
 }
 
 func Test_Run_ESEF2017(t *testing.T) {
+	throttle.StartSECThrottle()
 	wd, err := os.Getwd()
 	if err != nil {
 		t.Fatal(err)
 	}
 	tp := filepath.Join(wd, "esef_taxonomy_2017.zip")
 	volume := filepath.Join(wd, "data")
-	id, err := install.Run(tp, volume)
+	id, err := install.Run(tp, volume, throttle.Throttle)
 	if err != nil {
 		t.Fatal(err)
 	}

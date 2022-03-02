@@ -60,14 +60,14 @@ func Discover(entries []string) error {
 		}()
 		go func() {
 			defer wg.Done()
-			linkbaseRefSchema(schemaFile)
+			LinkbaseRefSchema(schemaFile)
 		}()
 		wg.Wait()
 	}
 	return nil
 }
 
-func linkbaseRefSchema(file *serializables.SchemaFile) {
+func LinkbaseRefSchema(file *serializables.SchemaFile) {
 	if file == nil {
 		return
 	}
