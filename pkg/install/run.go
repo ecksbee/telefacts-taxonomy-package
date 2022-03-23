@@ -43,6 +43,10 @@ func Run(taxonomyPackage string, volumePath string, throttle func(string)) (stri
 	if err != nil {
 		return "", err
 	}
+	err = DownloadDTRs(throttle)
+	if err != nil {
+		return "", err
+	}
 	return taxonomies.NewTaxonomy(taxonomies.Meta{
 		Name:    name,
 		Zip:     taxonomyPackage,
