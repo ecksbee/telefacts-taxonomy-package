@@ -35,6 +35,13 @@ func NewTaxonomy(tm Meta, bytes []byte) (string, error) {
 	}
 	serializables.VolumePath = VolumePath
 	workingDir := filepath.Join(VolumePath, "taxonomies")
+	_, err = os.Stat(workingDir)
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(workingDir, 0755)
+		if err != nil {
+			return "", err
+		}
+	}
 	id := uuid.New()
 	pathStr := filepath.Join(workingDir, id.String())
 	_, err = os.Stat(pathStr)
