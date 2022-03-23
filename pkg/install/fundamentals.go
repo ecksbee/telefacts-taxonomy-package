@@ -29,3 +29,27 @@ func DownloadLRR(throttle func(string)) error {
 	}
 	return actions.WriteFile(dest, lrr)
 }
+
+func DownloadDTRs(throttle func(string)) error {
+	num, err := actions.Scrape(attr.DTRNUM, throttle)
+	if err != nil {
+		return err
+	}
+	dest, err := serializables.UrlToFilename(attr.DTRNUM)
+	if err != nil {
+		return err
+	}
+	err = actions.WriteFile(dest, num)
+	if err != nil {
+		return err
+	}
+	nonnum, err := actions.Scrape(attr.DTRNONNUM, throttle)
+	if err != nil {
+		return err
+	}
+	dest, err = serializables.UrlToFilename(attr.DTRNONNUM)
+	if err != nil {
+		return err
+	}
+	return actions.WriteFile(dest, nonnum)
+}
