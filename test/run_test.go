@@ -29,6 +29,23 @@ func Test_Run_USGAAP2020(t *testing.T) {
 	}
 }
 
+func Test_Run_USGAAP2019(t *testing.T) {
+	throttle.StartSECThrottle()
+	wd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tp := filepath.Join(wd, "us-gaap-2019-01-31.zip")
+	volume := filepath.Join(wd, "data")
+	id, err := install.Run(tp, volume, throttle.Throttle)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if id == "" {
+		t.Fatal(fmt.Errorf("empty id generated"))
+	}
+}
+
 func Test_Run_ESEF2017(t *testing.T) {
 	throttle.StartSECThrottle()
 	wd, err := os.Getwd()
