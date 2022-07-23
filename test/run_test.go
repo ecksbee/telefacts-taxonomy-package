@@ -19,7 +19,7 @@ func Test_Run_USGAAP2020(t *testing.T) {
 		t.Fatal(err)
 	}
 	tp := filepath.Join(wd, "us-gaap-2020-01-31.zip")
-	volume := filepath.Join(wd, "data")
+	volume := filepath.Join(wd, "gts")
 	id, err := install.Run(tp, volume, throttle.Throttle)
 	if err != nil {
 		t.Fatal(err)
@@ -36,7 +36,7 @@ func Test_Run_USGAAP2019(t *testing.T) {
 		t.Fatal(err)
 	}
 	tp := filepath.Join(wd, "us-gaap-2019-01-31.zip")
-	volume := filepath.Join(wd, "data")
+	volume := filepath.Join(wd, "gts")
 	id, err := install.Run(tp, volume, throttle.Throttle)
 	if err != nil {
 		t.Fatal(err)
@@ -53,7 +53,7 @@ func Test_Run_ESEF2017(t *testing.T) {
 		t.Fatal(err)
 	}
 	tp := filepath.Join(wd, "esef_taxonomy_2017.zip")
-	volume := filepath.Join(wd, "data")
+	volume := filepath.Join(wd, "gts")
 	id, err := install.Run(tp, volume, throttle.Throttle)
 	if err != nil {
 		t.Fatal(err)
@@ -83,7 +83,7 @@ func Test_Run_CMF_CL_CI2020(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	taxonomies.VolumePath = filepath.Join(wd, "data")
+	taxonomies.VolumePath = filepath.Join(wd, "gts")
 	id, err := taxonomies.NewTaxonomy(tm, bytes)
 	if err != nil {
 		t.Fatal(err)
