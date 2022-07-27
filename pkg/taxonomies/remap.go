@@ -14,7 +14,7 @@ func Remap(bytes []byte, remap map[string]string) error {
 	if VolumePath == "" {
 		return fmt.Errorf("empty VolumePath")
 	}
-	serializables.VolumePath = VolumePath
+	serializables.GlobalTaxonomySetPath = VolumePath
 	unZipFiles, err := actions.Unzip(bytes)
 	if err != nil {
 		return err
