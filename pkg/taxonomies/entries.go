@@ -35,7 +35,7 @@ func Discover(entries []string) error {
 		return fmt.Errorf("empty VolumePath")
 	}
 	startSECThrottle()
-	serializables.VolumePath = VolumePath
+	serializables.GlobalTaxonomySetPath = VolumePath
 	for _, entry := range entries {
 		url, err := serializables.UrlToFilename(entry)
 		if err != nil {

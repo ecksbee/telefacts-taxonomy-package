@@ -34,7 +34,7 @@ func Run(taxonomyPackage string, volumePath string, throttle func(string)) (stri
 		return "", err
 	}
 	taxonomies.VolumePath = volumePath
-	serializables.VolumePath = volumePath
+	serializables.GlobalTaxonomySetPath = volumePath
 	err = DownloadUTR(throttle)
 	if err != nil {
 		return "", err

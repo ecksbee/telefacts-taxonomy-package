@@ -33,7 +33,7 @@ func NewTaxonomy(tm Meta, bytes []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	serializables.VolumePath = VolumePath
+	serializables.GlobalTaxonomySetPath = VolumePath
 	workingDir := filepath.Join(VolumePath, "taxonomies")
 	_, err = os.Stat(workingDir)
 	if os.IsNotExist(err) {
