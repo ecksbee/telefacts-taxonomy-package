@@ -31,18 +31,21 @@ func main() {
 	flag.DurationVar(&wait, "graceful-timeout", time.Second*15, "the duration for which the server gracefully wait for existing connections to finish - e.g. 15s or 1m")
 	flag.Parse()
 	fmt.Printf("%s zip\n", zipVar)
-	if zipVar == "" {
+	if zipVar == "" && volumeVar != "" {
 		fmt.Println("-zip is empty")
 		return
 	}
-	if volumeVar == "" {
+	if volumeVar == "" && zipVar != "" {
 		fmt.Println("-volume is empty")
 		return
 	}
-	throttle.StartSECThrottle()
-	_, err := install.Run(zipVar, volumeVar, throttle.Throttle)
-	if err != nil {
-		panic(err)
+	if zipVar != "" && volumeVar != "" {
+		throttle.StartSECThrottle()
+		_, err := install.Run(zipVar, volumeVar, throttle.Throttle)
+		if err != nil {
+			panic(err)
+		}
+		return
 	}
 	var ctx = context.Background()
 	srv := setupServer()
