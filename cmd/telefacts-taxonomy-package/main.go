@@ -77,7 +77,7 @@ func setupServer() *http.Server {
 
 	r := web.NewRouter()
 
-	fmt.Println("telefacts<-0.0.0.0:8080")
+	fmt.Println("telefacts-taxonomy-package-manager<-0.0.0.0:8080")
 	return &http.Server{
 		Addr:         "0.0.0.0:8080",
 		WriteTimeout: time.Second * 15,
