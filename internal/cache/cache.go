@@ -12,11 +12,11 @@ var (
 	rsrepo *RelationshipSetRepo
 )
 
-func InitRepo() {
+func InitRepo(gts string) {
 	once.Do(func() {
 		appCache := gocache.New(gocache.NoExpiration, gocache.NoExpiration)
-		nsrepo, _ = NewNamespaceRepo(appCache)
-		rsrepo, _ = NewRelationshipSetRepo(appCache)
+		nsrepo, _ = NewNamespaceRepo(appCache, gts)
+		rsrepo, _ = NewRelationshipSetRepo(appCache, gts)
 	})
 }
 

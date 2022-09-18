@@ -7,7 +7,7 @@ import (
 	gocache "github.com/patrickmn/go-cache"
 )
 
-func MarshalNamespace(repo *NamespaceRepo, namespace string) ([]byte, error) {
+func MarshalNamespace(namespace string) ([]byte, error) {
 	items := nsrepo.Query(namespace)
 	data := Page{
 		PageIndicator: 0,
@@ -31,7 +31,7 @@ func (repo *NamespaceRepo) Query(namespace string) []PageItem {
 	return make([]PageItem, 0)
 }
 
-func NewNamespaceRepo(cache *gocache.Cache) (*NamespaceRepo, error) {
+func NewNamespaceRepo(cache *gocache.Cache, gts string) (*NamespaceRepo, error) {
 	//todo inspect namespaces from discovered base taxonomies
 	return nil, nil
 }

@@ -15,7 +15,6 @@ import (
 	"ecksbee.com/telefacts-taxonomy-package/internal/web"
 	"ecksbee.com/telefacts-taxonomy-package/pkg/install"
 	"ecksbee.com/telefacts-taxonomy-package/pkg/throttle"
-	"ecksbee.com/telefacts/pkg/hydratables"
 	"ecksbee.com/telefacts/pkg/serializables"
 )
 
@@ -58,7 +57,6 @@ func main() {
 }
 
 func setupServer() *http.Server {
-	appCache := cache.NewCache()
 	dir, err := os.Getwd()
 	if err != nil {
 		dir = path.Join(".")
@@ -73,8 +71,7 @@ func setupServer() *http.Server {
 		gts = dir
 	}
 	serializables.GlobalTaxonomySetPath = path.Join(gts, "gts")
-	hydratables.InjectCache(appCache)
-
+	cache.InitRepo(serializables.GlobalTaxonomySetPath)
 	r := web.NewRouter()
 
 	fmt.Println("telefacts-taxonomy-package-manager<-0.0.0.0:8080")
