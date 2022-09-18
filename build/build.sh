@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-package_name='telefacts-taxon'
+package_name='telefacts-taxononmy-package'
 
 platforms=("linux/amd64" "linux/386" "windows/amd64" "windows/386" "darwin/amd64")
 
