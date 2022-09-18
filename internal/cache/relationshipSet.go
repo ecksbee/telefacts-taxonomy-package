@@ -2,6 +2,7 @@ package cache
 
 import (
 	"encoding/json"
+	"sync"
 )
 
 func MarshalRelationshipSet(namespace string) ([]byte, error) {
@@ -11,12 +12,20 @@ func MarshalRelationshipSet(namespace string) ([]byte, error) {
 		Items: []struct {
 			Display string
 			Link    string
-		}{},
+		}{
+			struct {
+				Display string
+				Link    string
+			}{
+				Display: "test",
+			},
+		},
 	}
 	return json.Marshal(&data)
 }
 
 type RelationshipSetRepo struct {
+	lock sync.RWMutex
 }
 
 func NewRelationshipSetRepo() (*RelationshipSetRepo, error) {

@@ -7,7 +7,6 @@ import (
 )
 
 var (
-	lock     sync.RWMutex
 	once     sync.Once
 	appCache *gocache.Cache
 )

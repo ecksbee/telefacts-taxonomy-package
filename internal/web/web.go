@@ -2,6 +2,7 @@ package web
 
 import (
 	"net/http"
+	neturl "net/url"
 
 	"ecksbee.com/telefacts-taxonomy-package/internal/cache"
 	"github.com/gorilla/mux"
@@ -13,10 +14,14 @@ func Namespaces() func(http.ResponseWriter, *http.Request) {
 			http.Error(w, "Error: incorrect verb, "+r.Method, http.StatusInternalServerError)
 			return
 		}
-		vars := mux.Vars(r)
-		ns := vars["ns"]
-		if len(ns) <= 0 {
-			http.Error(w, "Error: invalid ns '"+ns+"'", http.StatusBadRequest)
+		parsedquery, err := neturl.ParseQuery(r.URL.RawQuery)
+		if err != nil {
+			http.Error(w, "Error: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+		ns, err := neturl.QueryUnescape(parsedquery.Get("ns"))
+		if err != nil {
+			http.Error(w, "Error: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 		data, err := cache.MarshalNamespace(ns)
@@ -36,15 +41,14 @@ func RelationshipSets() func(http.ResponseWriter, *http.Request) {
 			http.Error(w, "Error: incorrect verb, "+r.Method, http.StatusInternalServerError)
 			return
 		}
-		vars := mux.Vars(r)
-		roleuri := vars["roleuri"]
-		if len(roleuri) <= 0 {
-			http.Error(w, "Error: invalid roleuri '"+roleuri+"'", http.StatusBadRequest)
+		parsedquery, err := neturl.ParseQuery(r.URL.RawQuery)
+		if err != nil {
+			http.Error(w, "Error: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		hash := vars["hash"]
-		if len(hash) <= 0 {
-			http.Error(w, "Error: invalid roote", http.StatusBadRequest)
+		roleuri, err := neturl.QueryUnescape(parsedquery.Get("roleuri"))
+		if err != nil {
+			http.Error(w, "Error: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 		data, err := cache.MarshalRelationshipSet(roleuri)
