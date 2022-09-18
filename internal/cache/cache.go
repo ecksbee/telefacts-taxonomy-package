@@ -7,26 +7,25 @@ import (
 )
 
 var (
-	once     sync.Once
-	appCache *gocache.Cache
+	once   sync.Once
+	nsrepo *NamespaceRepo
+	rsrepo *RelationshipSetRepo
 )
 
-func NewCache() *gocache.Cache {
+func InitRepo() {
 	once.Do(func() {
-		appCache = gocache.New(gocache.NoExpiration, gocache.NoExpiration)
+		appCache := gocache.New(gocache.NoExpiration, gocache.NoExpiration)
+		nsrepo, _ = NewNamespaceRepo(appCache)
+		rsrepo, _ = NewRelationshipSetRepo(appCache)
 	})
-	return appCache
 }
 
 type Page struct {
 	PageIndicator int
-	Items         []struct {
-		Display string
-		Link    string
-	}
+	Items         []PageItem
 }
 
 type PageItem struct {
-	PageIndicator int
-	Items         []PageItem
+	Display string
+	Link    string
 }
