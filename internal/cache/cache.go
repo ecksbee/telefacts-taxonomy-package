@@ -20,12 +20,10 @@ func InitRepo(gts string) {
 	})
 }
 
-type Page struct {
-	PageIndicator int
-	Items         []PageItem
+type NamespaceView struct {
+	RelationshipSets []string
 }
 
-type PageItem struct {
-	Display string
-	Link    string
+type RelationshipSetView struct {
+	Arcs []string
 }

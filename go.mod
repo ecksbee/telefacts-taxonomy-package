@@ -2,7 +2,7 @@ module ecksbee.com/telefacts-taxonomy-package
 
 go 1.16
 
-replace ecksbee.com/telefacts => github.com/ecksbee/telefacts v1.5.1
+replace ecksbee.com/telefacts => github.com/ecksbee/telefacts v1.5.3
 
 require (
 	ecksbee.com/telefacts v0.0.0
