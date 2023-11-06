@@ -1,21 +1,12 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
-	"log"
-	"net/http"
-	"os"
-	"os/signal"
-	"path"
 	"time"
 
-	"ecksbee.com/telefacts-taxonomy-package/internal/cache"
-	"ecksbee.com/telefacts-taxonomy-package/internal/web"
 	"ecksbee.com/telefacts-taxonomy-package/pkg/install"
 	"ecksbee.com/telefacts-taxonomy-package/pkg/throttle"
-	"ecksbee.com/telefacts/pkg/serializables"
 )
 
 var (
@@ -45,53 +36,5 @@ func main() {
 		}
 		return
 	}
-	var ctx = context.Background()
-	srv := setupServer()
-	go func() {
-		if err := srv.ListenAndServe(); err != nil {
-			log.Println(err)
-		}
-	}()
-	listenForShutdown(ctx, wait, srv)
-}
-
-func setupServer() *http.Server {
-	dir, err := os.Getwd()
-	if err != nil {
-		dir = path.Join(".")
-	}
-	wd := os.Getenv("WD")
-	if wd == "" {
-		wd = dir
-	}
-	serializables.WorkingDirectoryPath = path.Join(wd, "wd")
-	gts := os.Getenv("GTS")
-	if gts == "" {
-		gts = dir
-	}
-	serializables.GlobalTaxonomySetPath = path.Join(gts, "gts")
-	cache.InitRepo(serializables.GlobalTaxonomySetPath)
-	r := web.NewRouter()
-
-	fmt.Println("telefacts-ns-mgr<-0.0.0.0:8080")
-	return &http.Server{
-		Addr:         "0.0.0.0:8080",
-		WriteTimeout: time.Second * 15,
-		ReadTimeout:  time.Second * 15,
-		IdleTimeout:  time.Second * 60,
-		Handler:      r,
-	}
-}
-
-func listenForShutdown(ctx context.Context, grace time.Duration, srv *http.Server) {
-	c := make(chan os.Signal, 1)
-	// We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
-	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught.
-	signal.Notify(c, os.Interrupt)
-	<-c
-	log.Println("Shutting down")
-	ctx, cancel := context.WithTimeout(ctx, grace)
-	defer cancel()
-	srv.Shutdown(ctx)
-	os.Exit(0)
+	fmt.Println("no valid command parameters")
 }
